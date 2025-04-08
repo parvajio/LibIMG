@@ -5,12 +5,13 @@ import { Container, Box } from "@mui/material";
 import SearchBar from "@/components/SearchBar";
 import Pagination from "@/components/Pagination";
 import ImageGrid from "@/components/ImageGrid";
+import { PageProps } from "next";
 
-const page = async ({ searchParams }: { searchParams: { page?: string; search?: string } }) => {
+const page = async ({ searchParams }: PageProps["searchParams"]) => {
     const ITEMS_PER_PAGE = 6;
-    const currentPage = searchParams.page ? parseInt(searchParams.page, 10) : 1;
+    const currentPage = searchParams?.page ? parseInt(searchParams.page, 10) : 1;
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-    const searchTerm = searchParams.search || "";
+    const searchTerm = searchParams?.search || "";
 
     await connectDB();
 
