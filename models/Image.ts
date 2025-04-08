@@ -1,10 +1,20 @@
-import mongoose from "mongoose";
+// models/Image.ts
+import mongoose, { Schema, Document } from 'mongoose';
 
-const imageSchema = new mongoose.Schema({
-  url: String,
-  name: String,
-  shortDescription: String,
+export interface IImage extends Document {
+  url: string;
+  name: string;
+  shortDescription: string;
+  tags: string[];
+  createdAt: Date;
+}
+
+const ImageSchema: Schema = new Schema({
+  url: { type: String, required: true },
+  name: { type: String, required: true },
+  shortDescription: { type: String, required: false },
+  tags: { type: [String], default: [] },
   createdAt: { type: Date, default: Date.now }
 });
 
-export const Image = mongoose.models.Image || mongoose.model("Image", imageSchema);
+export default mongoose.models.Image || mongoose.model<IImage>('Image', ImageSchema);

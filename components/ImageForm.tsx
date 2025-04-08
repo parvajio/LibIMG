@@ -1,126 +1,114 @@
+// components/ImageForm.tsx
 "use client";
-
+import { useState } from "react";
 import Image from "next/image";
-import React, { useState } from "react";
+import { Chip, TextField } from "@mui/material";
 
-// interface ImageData {
-//   url: string;
-//   name: string;
-//   shortDescription: string;
-//   isSaved: boolean;
-// }
-
-const ImageForm = ({ url }: { url: string }) => {
-  const [images, setImages] = useState({
-    url,
+const ImageForm = ({ url, onSave }: { url: string; onSave: (data: any) => Promise<void> }) => {
+  const [formData, setFormData] = useState({
     name: "",
     shortDescription: "",
-    isSaved: false,
+    tags: [] as string[],
+    tagInput: ""
   });
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
-    if (isSaving || images.isSaved) return;
-    
+    setIsSaving(true);
     try {
-      setIsSaving(true);
-      const response = await fetch("/api/images", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          url: images.url,
-          name: images.name,
-          shortDescription: images.shortDescription,
-        }),
+      await onSave({
+        url,
+        name: formData.name,
+        shortDescription: formData.shortDescription,
+        tags: formData.tags
       });
-
-      if (response.ok) {
-        setImages(prev => ({
-          ...prev,
-          isSaved: true
-        }));
-      } else {
-        console.error("Failed to save image");
-      }
-    } catch (error) {
-      console.error("Error saving image:", error);
     } finally {
       setIsSaving(false);
     }
   };
 
-  const handleInputChange = (
-    field: "name" | "shortDescription",
-    value: string
-  ) => {
-    setImages(prev => ({
+  const handleAddTag = () => {
+    if (formData.tagInput.trim() && !formData.tags.includes(formData.tagInput)) {
+      setFormData(prev => ({
+        ...prev,
+        tags: [...prev.tags, prev.tagInput.trim()],
+        tagInput: ""
+      }));
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setFormData(prev => ({
       ...prev,
-      [field]: value,
+      tags: prev.tags.filter(tag => tag !== tagToRemove)
     }));
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-4 p-4 border rounded-lg">
       <Image
-        src={images.url}
+        src={url}
         alt="Uploaded image"
         width={300}
         height={300}
         className="max-h-96 rounded-md shadow mx-auto"
       />
-      <div className="space-y-4 p-4 bg-white rounded-lg shadow">
-        <div className="flex flex-col space-y-1">
-          <label
-            htmlFor="image-name"
-            className="text-sm font-medium text-gray-700"
-          >
-            Image Name
-          </label>
-          <input
-            id="image-name"
-            type="text"
-            placeholder="Enter image name"
-            value={images.name}
-            onChange={(e) => handleInputChange("name", e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-            disabled={images.isSaved}
+      
+      <TextField
+        fullWidth
+        label="Image Name"
+        value={formData.name}
+        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+        margin="normal"
+      />
+      
+      <TextField
+        fullWidth
+        label="Short Description"
+        multiline
+        rows={3}
+        value={formData.shortDescription}
+        onChange={(e) => setFormData(prev => ({ ...prev, shortDescription: e.target.value }))}
+        margin="normal"
+      />
+      
+      <div className="space-y-2">
+        <div className="flex gap-2">
+          <TextField
+            fullWidth
+            label="Add Tag"
+            value={formData.tagInput}
+            onChange={(e) => setFormData(prev => ({ ...prev, tagInput: e.target.value }))}
+            onKeyDown={(e) => e.key === 'Enter' && handleAddTag()}
+            margin="none"
+            size="small"
           />
-        </div>
-
-        <div className="flex flex-col space-y-1">
-          <label
-            htmlFor="short-description"
-            className="text-sm font-medium text-gray-700"
+          <button 
+            onClick={handleAddTag}
+            className="bg-blue-500 text-white px-3 rounded"
           >
-            Short Description
-          </label>
-          <input
-            id="short-description"
-            type="text"
-            placeholder="Enter a short description"
-            value={images.shortDescription}
-            onChange={(e) => handleInputChange("shortDescription", e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-            disabled={images.isSaved}
-          />
+            Add
+          </button>
         </div>
-
-        <button
-          onClick={handleSave}
-          disabled={images.isSaved || isSaving || !images.name}
-          className={`w-full p-2 rounded-md transition-all duration-200 ${
-            images.isSaved
-              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : isSaving
-              ? "bg-blue-400 text-white cursor-wait"
-              : "bg-blue-500 hover:bg-blue-600 text-white"
-          }`}
-        >
-          {isSaving ? "Saving..." : images.isSaved ? "Saved" : "Save"}
-        </button>
+        
+        <div className="flex flex-wrap gap-2">
+          {formData.tags.map(tag => (
+            <Chip
+              key={tag}
+              label={tag}
+              onDelete={() => handleRemoveTag(tag)}
+            />
+          ))}
+        </div>
       </div>
+      
+      <button
+        onClick={handleSave}
+        disabled={isSaving || !formData.name}
+        className={`w-full p-2 rounded-md ${isSaving ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
+      >
+        {isSaving ? 'Saving...' : 'Save Image'}
+      </button>
     </div>
   );
 };
