@@ -34,11 +34,12 @@ async function getImages(searchTerm: string = "", page: number = 1) {
     .limit(ITEMS_PER_PAGE)
     .lean();
 
-  // Serialize the data to plain objects
+  // Serialize the data to match the expected ImageGrid props
   const serializedImages = images.map(image => ({
-    ...image,
     _id: (image._id as { toString(): string }).toString(),
-    createdAt: (image.createdAt as Date).toISOString()
+    url: image.url,
+    name: image.name,
+    shortDescription: image.shortDescription
   }));
 
   return {
