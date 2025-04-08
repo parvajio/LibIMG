@@ -2,6 +2,7 @@ import { Box, Container, IconButton, Typography } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import { Code } from '@mui/icons-material';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -27,7 +28,7 @@ const Footer = () => {
         >
           <Box sx={{ display: 'flex', gap: 1 }}>
             <IconButton
-              href="https://github.com"
+              href="https://github.com/parvajio"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"
@@ -35,15 +36,15 @@ const Footer = () => {
               <GitHubIcon />
             </IconButton>
             <IconButton
-              href="https://twitter.com"
+              href="https://leetcode.com/u/parvajio"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Twitter"
             >
-              <TwitterIcon />
+              <Code />
             </IconButton>
             <IconButton
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/parvajio/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"

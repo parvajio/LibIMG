@@ -1,4 +1,3 @@
-// app/page.tsx
 "use client";
 import { useState, useEffect } from "react";
 import FileUpload from "@/components/FileUpload";
@@ -51,7 +50,6 @@ export default function Home() {
       <div className="space-y-8">
         <FileUpload onUploadSuccess={() => fetchImages(data.page, searchTerm)} />
         
-        {/* Search Input moved here */}
         <div className="relative">
           <input
             type="text"

@@ -1,11 +1,10 @@
-// components/FileUpload.tsx
 "use client";
 import { useState } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 import ImageForm from "./ImageForm";
 
 interface FileUploadProps {
-  onUploadSuccess?: () => void; // Make it optional with ?
+  onUploadSuccess?: () => void; 
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess }) => {
@@ -23,7 +22,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess }) => {
     if (response.ok) {
       setUploadedUrls(prev => prev.filter(url => url !== imageData.url));
       if (onUploadSuccess) {
-        onUploadSuccess(); // Trigger refresh if defined
+        onUploadSuccess();
       }
     }
   };
@@ -35,7 +34,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess }) => {
         options={{ multiple: true }}
         onSuccess={(result) => {
           if (result?.info && typeof result.info === "object" && "secure_url" in result.info) {
-            const info = result.info as any; // Use 'any' here temporarily
+            const info = result.info as any;
             setUploadedUrls(prev => [...prev, info.secure_url]);
           }
         }}
