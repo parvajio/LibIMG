@@ -2,6 +2,7 @@
 
 import { CldUploadWidget, CloudinaryUploadWidgetInfo } from "next-cloudinary";
 import React, { useState } from "react";
+import ImageForm from "./ImageForm";
 
 const FileUpload = () => {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -46,16 +47,7 @@ const FileUpload = () => {
       </CldUploadWidget>
 
       {imageUrls.length > 0 && (
-        <div className="mt-4 grid grid-cols-2 gap-4">
-          {imageUrls.map((url, index) => (
-            <img
-              key={index}
-              src={url}
-              alt={`Uploaded ${index + 1}`}
-              className="max-w-full rounded shadow"
-            />
-          ))}
-        </div>
+        <ImageForm imageUrls={imageUrls}></ImageForm>
       )}
     </div>
   );
