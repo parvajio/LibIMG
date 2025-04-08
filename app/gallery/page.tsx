@@ -33,9 +33,11 @@ const page = async ({ searchParams }: { searchParams: { page?: string; search?: 
     const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
     const serializedImages = images.map(image => ({
-        ...image,
-        _id: image._id.toString(),
+        _id: image._id ? image._id.toString() : "",
         createdAt: image.createdAt.toISOString(),
+        url: image.url || "",
+        name: image.name || "",
+        shortDescription: image.shortDescription || "",
     }));
 
     return (
@@ -44,7 +46,7 @@ const page = async ({ searchParams }: { searchParams: { page?: string; search?: 
                 <SearchBar defaultValue={searchTerm} />
             </Box>
 
-            <ImageGrid images={serializedImages} />
+            <ImageGrid images={serializedImages || []} />
 
             {totalPages > 1 && (
                 <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
