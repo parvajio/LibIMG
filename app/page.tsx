@@ -37,8 +37,8 @@ async function getImages(searchTerm: string = "", page: number = 1) {
   // Serialize the data to plain objects
   const serializedImages = images.map(image => ({
     ...image,
-    _id: image._id.toString(),
-    createdAt: image.createdAt.toISOString()
+    _id: (image._id as { toString(): string }).toString(),
+    createdAt: (image.createdAt as Date).toISOString()
   }));
 
   return {
