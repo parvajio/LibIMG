@@ -20,7 +20,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, search
     if (searchTerm) {
       params.set('search', searchTerm);
     }
-    router.push(`/?${params.toString()}`);
+    router.push(`/gallery?${params.toString()}`);
   };
 
   return (
