@@ -9,7 +9,6 @@ interface FileUploadProps {
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess }) => {
-
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
 
   const handleSaveImage = async (imageData: any) => {
@@ -36,7 +35,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess }) => {
         options={{ multiple: true }}
         onSuccess={(result) => {
           if (result?.info && typeof result.info === "object" && "secure_url" in result.info) {
-            const info = result.info as CloudinaryUploadWidgetInfo;
+            const info = result.info as any; // Use 'any' here temporarily
             setUploadedUrls(prev => [...prev, info.secure_url]);
           }
         }}
