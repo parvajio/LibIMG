@@ -1,10 +1,10 @@
-import React from 'react';
-import { connectDB } from '@/lib/db';
-import { Image } from '@/models/Image';
-import Card from '@/components/Card';
-import { Container, Grid, Box } from '@mui/material';
-import SearchBar from '@/components/SearchBar';
-import Pagination from '@/components/Pagination';
+import React from "react";
+import { connectDB } from "@/lib/db";
+import { Image } from "@/models/Image";
+import { Container, Box } from "@mui/material";
+import SearchBar from "@/components/SearchBar";
+import Pagination from "@/components/Pagination";
+import ImageGrid from "@/components/ImageGrid";
 
 interface HomePageProps {
   searchParams: {
@@ -15,15 +15,15 @@ interface HomePageProps {
 
 const ITEMS_PER_PAGE = 6;
 
-async function getImages(searchTerm: string = '', page: number = 1) {
+async function getImages(searchTerm: string = "", page: number = 1) {
   await connectDB();
-  
+
   const query = searchTerm
     ? {
         $or: [
-          { name: { $regex: searchTerm, $options: 'i' } },
-          { shortDescription: { $regex: searchTerm, $options: 'i' } }
-        ]
+          { name: { $regex: searchTerm, $options: "i" } },
+          { shortDescription: { $regex: searchTerm, $options: "i" } },
+        ],
       }
     : {};
 
@@ -34,16 +34,23 @@ async function getImages(searchTerm: string = '', page: number = 1) {
     .limit(ITEMS_PER_PAGE)
     .lean();
 
+  // Serialize the data to plain objects
+  const serializedImages = images.map(image => ({
+    ...image,
+    _id: image._id.toString(),
+    createdAt: image.createdAt.toISOString()
+  }));
+
   return {
-    images,
-    totalPages: Math.ceil(total / ITEMS_PER_PAGE)
+    images: serializedImages,
+    totalPages: Math.ceil(total / ITEMS_PER_PAGE),
   };
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
-  const searchTerm = searchParams.search || '';
+  const searchTerm = searchParams.search || "";
   const currentPage = Number(searchParams.page) || 1;
-  
+
   const { images, totalPages } = await getImages(searchTerm, currentPage);
 
   return (
@@ -52,23 +59,13 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         <SearchBar defaultValue={searchTerm} />
       </Box>
 
-      <Grid container spacing={3}>
-        {images.map((image: any) => (
-          <Grid item xs={12} sm={6} md={4} key={image._id.toString()}>
-            <Card
-              url={image.url}
-              name={image.name}
-              shortDescription={image.shortDescription}
-            />
-          </Grid>
-        ))}
-      </Grid>
+      <ImageGrid images={images} />
 
       {totalPages > 1 && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-          <Pagination 
-            currentPage={currentPage} 
-            totalPages={totalPages} 
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
             searchTerm={searchTerm}
           />
         </Box>

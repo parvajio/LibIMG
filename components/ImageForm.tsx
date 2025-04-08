@@ -17,9 +17,13 @@ const ImageForm = ({ url }: { url: string }) => {
     shortDescription: "",
     isSaved: false,
   });
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSave = async (index: number) => {
+  const handleSave = async () => {
+    if (isSaving || images.isSaved) return;
+    
     try {
+      setIsSaving(true);
       const response = await fetch("/api/images", {
         method: "POST",
         headers: {
@@ -33,11 +37,17 @@ const ImageForm = ({ url }: { url: string }) => {
       });
 
       if (response.ok) {
-        images.isSaved = true;
-        setImages(images);
+        setImages(prev => ({
+          ...prev,
+          isSaved: true
+        }));
+      } else {
+        console.error("Failed to save image");
       }
     } catch (error) {
       console.error("Error saving image:", error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -45,10 +55,10 @@ const ImageForm = ({ url }: { url: string }) => {
     field: "name" | "shortDescription",
     value: string
   ) => {
-    setImages({
-      ...images,
+    setImages(prev => ({
+      ...prev,
       [field]: value,
-    });
+    }));
   };
 
   return (
@@ -58,8 +68,8 @@ const ImageForm = ({ url }: { url: string }) => {
         alt="Uploaded image"
         width={300}
         height={300}
-        className=" max-h-96 rounded-md shadow mx-auto"
-      ></Image>
+        className="max-h-96 rounded-md shadow mx-auto"
+      />
       <div className="space-y-4 p-4 bg-white rounded-lg shadow">
         <div className="flex flex-col space-y-1">
           <label
@@ -75,6 +85,7 @@ const ImageForm = ({ url }: { url: string }) => {
             value={images.name}
             onChange={(e) => handleInputChange("name", e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            disabled={images.isSaved}
           />
         </div>
 
@@ -90,23 +101,24 @@ const ImageForm = ({ url }: { url: string }) => {
             type="text"
             placeholder="Enter a short description"
             value={images.shortDescription}
-            onChange={(e) =>
-              handleInputChange("shortDescription", e.target.value)
-            }
+            onChange={(e) => handleInputChange("shortDescription", e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            disabled={images.isSaved}
           />
         </div>
 
         <button
-          onClick={() => handleSave(0)}
-          disabled={images.isSaved}
+          onClick={handleSave}
+          disabled={images.isSaved || isSaving || !images.name}
           className={`w-full p-2 rounded-md transition-all duration-200 ${
             images.isSaved
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : isSaving
+              ? "bg-blue-400 text-white cursor-wait"
               : "bg-blue-500 hover:bg-blue-600 text-white"
           }`}
         >
-          {images.isSaved ? "Saved" : "Save"}
+          {isSaving ? "Saving..." : images.isSaved ? "Saved" : "Save"}
         </button>
       </div>
     </div>
