@@ -47,7 +47,11 @@ const FileUpload = () => {
       </CldUploadWidget>
 
       {imageUrls.length > 0 && (
-        <ImageForm imageUrls={imageUrls}></ImageForm>
+        <div className="mt-4 grid grid-cols-2 gap-4">
+          {imageUrls.map((url, index) => (
+            <ImageForm key={index} url={url}></ImageForm>
+          ))}
+        </div>
       )}
     </div>
   );
