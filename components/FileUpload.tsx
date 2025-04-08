@@ -4,7 +4,12 @@ import { useState } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 import ImageForm from "./ImageForm";
 
-const FileUpload = ({ onUploadSuccess }: { onUploadSuccess: () => void }) => {
+interface FileUploadProps {
+  onUploadSuccess?: () => void; // Make it optional with ?
+}
+
+const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess }) => {
+
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
 
   const handleSaveImage = async (imageData: any) => {
@@ -15,10 +20,12 @@ const FileUpload = ({ onUploadSuccess }: { onUploadSuccess: () => void }) => {
       },
       body: JSON.stringify(imageData),
     });
-    
+
     if (response.ok) {
       setUploadedUrls(prev => prev.filter(url => url !== imageData.url));
-      onUploadSuccess(); // Trigger refresh
+      if (onUploadSuccess) {
+        onUploadSuccess(); // Trigger refresh if defined
+      }
     }
   };
 
