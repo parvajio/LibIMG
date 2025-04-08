@@ -6,11 +6,9 @@ import SearchBar from "@/components/SearchBar";
 import Pagination from "@/components/Pagination";
 import ImageGrid from "@/components/ImageGrid";
 
-interface HomePageProps {
-  searchParams: {
-    search?: string;
-    page?: string;
-  };
+interface SearchParams {
+  search?: string;
+  page?: string;
 }
 
 const ITEMS_PER_PAGE = 6;
@@ -48,7 +46,11 @@ async function getImages(searchTerm: string = "", page: number = 1) {
   };
 }
 
-export default async function HomePage({ searchParams }: HomePageProps) {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const searchTerm = searchParams.search || "";
   const currentPage = Number(searchParams.page) || 1;
 
