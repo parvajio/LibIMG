@@ -48,7 +48,7 @@ export default function Home() {
       <h1 className="text-3xl font-bold mb-8">Image Gallery</h1>
       <div className="space-y-8">
         <FileUpload onUploadSuccess={() => fetchImages(data.page)} />
-        
+
         {loading ? (
           <div className="text-center py-8">Loading images...</div>
         ) : (

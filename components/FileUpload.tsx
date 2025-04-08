@@ -1,17 +1,10 @@
 // components/FileUpload.tsx
 "use client";
 import { useState } from "react";
-
-// Define the CloudinaryUploadWidgetInfo type
-interface CloudinaryUploadWidgetInfo {
-  secure_url: string;
-  [key: string]: any; // Allow additional properties
-}
 import { CldUploadWidget } from "next-cloudinary";
 import ImageForm from "./ImageForm";
 
-
-const FileUpload = () => {
+const FileUpload = ({ onUploadSuccess }: { onUploadSuccess: () => void }) => {
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
 
   const handleSaveImage = async (imageData: any) => {
@@ -25,6 +18,7 @@ const FileUpload = () => {
     
     if (response.ok) {
       setUploadedUrls(prev => prev.filter(url => url !== imageData.url));
+      onUploadSuccess(); // Trigger refresh
     }
   };
 
