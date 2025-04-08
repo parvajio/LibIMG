@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState } from "react";
 
 // interface ImageData {
@@ -46,38 +47,62 @@ const ImageForm = ({ url }: { url: string }) => {
   ) => {
     setImages({
       ...images,
-      [field]: value
+      [field]: value,
     });
   };
 
   return (
     <div className="space-y-2">
-      <img
+      <Image
         src={images.url}
-        alt={`Uploaded `}
-        className="max-w-full rounded shadow"
-      />
-      <div className="space-y-2 p-2">
-        <input
-          type="text"
-          placeholder="Image Name"
-          value={images.name}
-          onChange={(e) => handleInputChange("name", e.target.value)}
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="Short Description"
-          value={images.shortDescription}
-          onChange={(e) => handleInputChange("shortDescription", e.target.value)}
-          className="w-full p-2 border rounded"
-        />
+        alt="Uploaded image"
+        width={300}
+        height={300}
+        className=" max-h-96 rounded-md shadow mx-auto"
+      ></Image>
+      <div className="space-y-4 p-4 bg-white rounded-lg shadow">
+        <div className="flex flex-col space-y-1">
+          <label
+            htmlFor="image-name"
+            className="text-sm font-medium text-gray-700"
+          >
+            Image Name
+          </label>
+          <input
+            id="image-name"
+            type="text"
+            placeholder="Enter image name"
+            value={images.name}
+            onChange={(e) => handleInputChange("name", e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        <div className="flex flex-col space-y-1">
+          <label
+            htmlFor="short-description"
+            className="text-sm font-medium text-gray-700"
+          >
+            Short Description
+          </label>
+          <input
+            id="short-description"
+            type="text"
+            placeholder="Enter a short description"
+            value={images.shortDescription}
+            onChange={(e) =>
+              handleInputChange("shortDescription", e.target.value)
+            }
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
         <button
           onClick={() => handleSave(0)}
           disabled={images.isSaved}
-          className={`w-full p-2 rounded ${
+          className={`w-full p-2 rounded-md transition-all duration-200 ${
             images.isSaved
-              ? "bg-gray-300 cursor-not-allowed"
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-blue-500 hover:bg-blue-600 text-white"
           }`}
         >
