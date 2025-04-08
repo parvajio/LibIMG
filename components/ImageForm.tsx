@@ -17,9 +17,6 @@ const ImageForm = ({ url }: { url: string }) => {
     isSaved: false,
   });
 
-  console.log(url)
-  console.log(images)
-
   const handleSave = async (index: number) => {
     try {
       const response = await fetch("/api/images", {

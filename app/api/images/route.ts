@@ -56,3 +56,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: "Failed to save image" }, { status: 500 });
   }
 }
+
+// get
+
+export async function GET() {
+  try {
+    await connectDB();
+    const images = await Image.find().sort({ createdAt: -1 }); // latest first
+    return NextResponse.json({ success: true, images });
+  } catch (error) {
+    console.error("Error fetching images:", error);
+    return NextResponse.json({ success: false, error: "Failed to fetch images" }, { status: 500 });
+  }
+}
+
